@@ -52,8 +52,14 @@
             <version>${slf4j.version}</version>
         </dependency>
 
+        <!-- Bootstrap as webjars -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>3.0.2</version>
+        </dependency>
     </dependencies>
-    
+
     <build>
         <resources>
             <resource>

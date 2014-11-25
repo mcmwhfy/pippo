@@ -125,6 +125,12 @@ public class JettyServer extends AbstractWebServer {
             handlerList.addHandler(externalStaticResourceHandler);
         }
 
+        // add webjars resource handler
+        Handler webjarsResourceHandler = createWebjarsResourceHandler();
+        if (webjarsResourceHandler != null) {
+            handlerList.addHandler(webjarsResourceHandler);
+        }
+
         // add pippo handler
         Handler pippoHandler = createPippoHandler();
         handlerList.addHandler(pippoHandler);
@@ -137,6 +143,7 @@ public class JettyServer extends AbstractWebServer {
 
         String staticFilesLocation = settings.getStaticFilesLocation();
         if (staticFilesLocation != null) {
+            log.debug("Add static resource handler");
             log.debug("Static files location: '{}'", staticFilesLocation);
             handler = new StaticResourceHandler();
             handler.setBaseResource(Resource.newClassPathResource(staticFilesLocation));
@@ -156,6 +163,7 @@ public class JettyServer extends AbstractWebServer {
 
         String externalStaticFilesLocation = settings.getExternalStaticFilesLocation();
         if (externalStaticFilesLocation != null) {
+            log.debug("Add external static resource handler");
             log.debug("External static files location: '{}'", externalStaticFilesLocation);
             handler = new StaticResourceHandler();
             File dir = new File(externalStaticFilesLocation);
@@ -169,6 +177,21 @@ public class JettyServer extends AbstractWebServer {
             }
         } else {
             log.debug("No external static files location");
+        }
+
+        return handler;
+    }
+
+    protected ResourceHandler createWebjarsResourceHandler() {
+        ResourceHandler handler = null;
+
+        log.debug("Add webjars resource handler");
+        log.debug("Webjars files location: '{}'", "META-INF/resources");
+        handler = new StaticResourceHandler();
+        handler.setBaseResource(Resource.newClassPathResource("META-INF/resources"));
+        handler.setDirectoriesListed(false);
+        if (RuntimeMode.getCurrent() == RuntimeMode.DEV) {
+            handler.setCacheControl("no-cache"); // disable cache
         }
 
         return handler;
